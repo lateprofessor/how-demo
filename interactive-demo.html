@@ -1980,7 +1980,9 @@
         state.boostUses = 0;
         state.secondsRemaining = CYCLE_SECONDS;
         render();
-        showToast("Payout Ready", formatMoney(payout), { kind: "payout", duration: 4200 });
+        if (payout > 0) {
+          showToast("Payout Ready", formatMoney(payout), { kind: "payout", duration: 4200 });
+        }
         addLog(
           "Cycle restarted",
           `${formatNumber(payoutDollars * POINTS_PER_DOLLAR)} points converted to ${formatMoney(payout)}.`,
