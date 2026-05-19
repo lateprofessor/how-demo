@@ -1778,6 +1778,7 @@
 
       let state = { ...START_STATE, guesses: [] };
       let toastTimer;
+      let toastAnimationFrame;
       let cycleInterval;
 
       const $ = (selector, root = document) => root.querySelector(selector);
@@ -1929,8 +1930,29 @@
         while (log.children.length > 6) log.lastElementChild.remove();
       }
 
+      function animateMoneyValue(target, fromValue, toValue, duration = 1200) {
+        const from = Math.round(fromValue * 100);
+        const to = Math.round(toValue * 100);
+        const startedAt = performance.now();
+
+        cancelAnimationFrame(toastAnimationFrame);
+        const step = (now) => {
+          const progress = Math.min(1, (now - startedAt) / duration);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const cents = Math.round(from + (to - from) * eased);
+          target.textContent = formatMoney(cents / 100);
+          if (progress < 1) {
+            toastAnimationFrame = requestAnimationFrame(step);
+          }
+        };
+
+        target.textContent = formatMoney(fromValue);
+        toastAnimationFrame = requestAnimationFrame(step);
+      }
+
       function showToast(title, detail = "", options = {}) {
         const toast = $("[data-toast]");
+        cancelAnimationFrame(toastAnimationFrame);
         toast.classList.toggle("payout-toast", options.kind === "payout");
         toast.classList.toggle("loyalty-toast", options.kind === "loyalty");
         if (options.kind === "payout") {
@@ -1938,9 +1960,12 @@
             <div class="payout-icon" aria-hidden="true">$</div>
             <div>
               <strong>${title}</strong>
-              <span>${detail}</span>
+              <span data-count-up>${detail}</span>
             </div>
           `;
+          if (Number.isFinite(options.countFrom) && Number.isFinite(options.countTo)) {
+            animateMoneyValue($("[data-count-up]", toast), options.countFrom, options.countTo);
+          }
         } else if (options.kind === "loyalty") {
           toast.innerHTML = `
             <strong>${title}</strong>
@@ -1955,6 +1980,7 @@
           toast.classList.remove("is-visible");
           toast.classList.remove("payout-toast");
           toast.classList.remove("loyalty-toast");
+          cancelAnimationFrame(toastAnimationFrame);
         }, options.duration || 2600);
       }
 
@@ -1973,20 +1999,27 @@
       }
 
       function completeCycle() {
-        const hadLoyaltyPoints = state.points > 0;
-        const payoutDollars = Math.floor(state.points / POINTS_PER_DOLLAR);
-        const payout = payoutDollars;
-        state.balance = Math.round((state.balance + payout) * 100) / 100;
+        const pointsForConversion = state.points;
+        const hadLoyaltyPoints = pointsForConversion > 0;
+        const previousBalance = state.balance;
+        const convertedBalance = Math.round((pointsForConversion / POINTS_PER_DOLLAR) * 100) / 100;
+        const updatedBalance = Math.round((previousBalance + convertedBalance) * 100) / 100;
+        state.balance = updatedBalance;
         state.points = 0;
         state.boostUses = 0;
         state.secondsRemaining = CYCLE_SECONDS;
         render();
         if (hadLoyaltyPoints) {
-          showToast("Payout Ready", formatMoney(payout), { kind: "payout", duration: 4200 });
+          showToast("Payout Ready", formatMoney(updatedBalance), {
+            kind: "payout",
+            countFrom: previousBalance,
+            countTo: updatedBalance,
+            duration: 4200,
+          });
         }
         addLog(
           "Cycle restarted",
-          `${formatNumber(payoutDollars * POINTS_PER_DOLLAR)} points converted to ${formatMoney(payout)}.`,
+          `${formatNumber(pointsForConversion)} points converted to ${formatMoney(convertedBalance)}.`,
         );
       }
 
