@@ -322,11 +322,15 @@
       }
 
       .provider-chip {
+        display: grid;
+        place-items: start center;
         min-height: 52px;
         border: 1px solid var(--line-strong);
         background: #fff;
         font-size: 12px;
         font-weight: 850;
+        padding: 8px 6px;
+        text-align: center;
       }
 
       .provider-list {
@@ -1340,16 +1344,16 @@
                     <button class="cashout-help" data-action="showAccumulationInfo">
                       Can I accumulate my earnings?
                     </button>
-                    <div class="quick-providers" aria-label="Quick provider choices">
-                      <a href="#cashoutForm:PayPal" class="provider-chip" role="button" data-route="cashoutForm" data-provider="PayPal">
+                    <div class="quick-providers" aria-label="Example available coupons">
+                      <div class="provider-chip" aria-label="PayPal coupon available">
                         PayPal
-                      </a>
-                      <a href="#cashoutForm:Walmart%20eGift%20Card" class="provider-chip" role="button" data-route="cashoutForm" data-provider="Walmart eGift Card">
+                      </div>
+                      <div class="provider-chip" aria-label="Walmart coupon available">
                         Walmart
-                      </a>
-                      <a href="#cashoutForm:Google%20Play" class="provider-chip" role="button" data-route="cashoutForm" data-provider="Google Play">
+                      </div>
+                      <div class="provider-chip" aria-label="Google coupon available">
                         Google
-                      </a>
+                      </div>
                     </div>
                   </div>
                 </section>
