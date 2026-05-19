@@ -368,10 +368,19 @@
         min-height: 52px;
         border: 1px solid var(--line-strong);
         background: #fff;
+        cursor: default;
         font-size: 12px;
         font-weight: 850;
         padding: 8px 6px;
+        pointer-events: none;
         text-align: center;
+      }
+
+      .coupon-disclaimer {
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 750;
+        margin: 8px 0 0;
       }
 
       .provider-list {
@@ -1395,16 +1404,17 @@
                       Can I accumulate my earnings?
                     </button>
                     <div class="quick-providers" aria-label="Example available coupons">
-                      <div class="provider-chip" aria-label="PayPal coupon available">
-                        PayPal
+                      <div class="provider-chip" aria-label="PayPal logo placeholder">
+                        PayPal Logo
                       </div>
-                      <div class="provider-chip" aria-label="Walmart coupon available">
-                        Walmart
+                      <div class="provider-chip" aria-label="Walmart logo placeholder">
+                        Walmart Logo
                       </div>
-                      <div class="provider-chip" aria-label="Google coupon available">
-                        Google
+                      <div class="provider-chip" aria-label="Google logo placeholder">
+                        Google Logo
                       </div>
                     </div>
+                    <p class="coupon-disclaimer">Placeholder Disclamer Text</p>
                   </div>
                 </section>
 
