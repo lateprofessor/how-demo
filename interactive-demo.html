@@ -1973,6 +1973,7 @@
       }
 
       function completeCycle() {
+        const hadLoyaltyPoints = state.points > 0;
         const payoutDollars = Math.floor(state.points / POINTS_PER_DOLLAR);
         const payout = payoutDollars;
         state.balance = Math.round((state.balance + payout) * 100) / 100;
@@ -1980,7 +1981,7 @@
         state.boostUses = 0;
         state.secondsRemaining = CYCLE_SECONDS;
         render();
-        if (payout > 0) {
+        if (hadLoyaltyPoints) {
           showToast("Payout Ready", formatMoney(payout), { kind: "payout", duration: 4200 });
         }
         addLog(
