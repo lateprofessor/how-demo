@@ -207,6 +207,39 @@
         text-transform: uppercase;
       }
 
+      .label-with-info {
+        align-items: center;
+        display: inline-flex;
+        gap: 6px;
+      }
+
+      .label-with-info .tiny-label {
+        display: inline-block;
+      }
+
+      .info-dot {
+        align-items: center;
+        background: #fff;
+        border: 1px solid var(--line-strong);
+        border-radius: 50%;
+        color: var(--ink);
+        display: inline-flex;
+        flex: 0 0 auto;
+        font-size: 10px;
+        font-weight: 900;
+        height: 18px;
+        justify-content: center;
+        line-height: 1;
+        padding: 0;
+        width: 18px;
+      }
+
+      .info-dot:hover,
+      .info-dot:focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: 2px;
+      }
+
       .balance-value {
         display: block;
         font-size: 22px;
@@ -1183,7 +1216,16 @@
                   <div class="wire-card">
                     <div class="loyalty-head">
                       <div>
-                        <span class="tiny-label">Loyalty Points</span>
+                        <div class="label-with-info">
+                          <span class="tiny-label">Loyalty Points</span>
+                          <button
+                            class="info-dot"
+                            data-action="showLoyaltyInfo"
+                            aria-label="How Loyalty Points Work"
+                          >
+                            i
+                          </button>
+                        </div>
                         <div class="point-total" data-bind="points">0</div>
                       </div>
                       <div class="timer">
@@ -1594,6 +1636,22 @@
                 </p>
                 <div class="modal-actions">
                   <button class="inline-btn solid" data-action="closeModal">Ok</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-layer" data-modal="loyaltyInfo" role="dialog" aria-modal="true">
+              <div class="modal">
+                <div class="modal-icon">i</div>
+                <h2>How Loyalty Points Work</h2>
+                <p>
+                  The conversion of loyalty coins to the local currency for each user takes into
+                  account the following variables: digital advertising service auction bids for ad
+                  impressions, proprietary fraud scoring, achievements in games, and time spent in
+                  games.
+                </p>
+                <div class="modal-actions">
+                  <button class="inline-btn solid" data-action="closeModal">OK</button>
                 </div>
               </div>
             </div>
@@ -2143,6 +2201,11 @@
         showToast("Accumulation note", "The demo keeps earnings available until a cashout is confirmed.");
       }
 
+      function showLoyaltyInfo() {
+        $("[data-modal='loyaltyInfo']").classList.add("is-open");
+        addLog("Loyalty info opened", "User viewed the loyalty point conversion explanation.");
+      }
+
       function resetWordle() {
         state.guesses = [];
         $("[data-wordle-input]").value = "";
@@ -2258,6 +2321,7 @@
         if (action === "confirmCashout") confirmCashout();
         if (action === "clearBalance") clearBalance();
         if (action === "showAccumulationInfo") showAccumulationInfo();
+        if (action === "showLoyaltyInfo") showLoyaltyInfo();
         if (action === "openWordle") openWordle();
         if (action === "submitGuess") submitGuess();
         if (action === "resetLevel") resetLevel();
