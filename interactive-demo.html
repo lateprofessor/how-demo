@@ -1157,11 +1157,11 @@
                 <div class="balance-row">
                   <div>
                     <span class="tiny-label">Available Balance</span>
-                    <span class="balance-value" data-bind="balance">$0.25</span>
+                    <span class="balance-value" data-bind="balance">$6.00</span>
                   </div>
                   <div class="timer">
                     <span class="tiny-label">Cycle Timer</span>
-                    <strong data-bind="timer">02:59:59</strong>
+                    <strong data-bind="timer">01:00</strong>
                   </div>
                 </div>
               </header>
@@ -1172,11 +1172,11 @@
                     <div class="loyalty-head">
                       <div>
                         <span class="tiny-label">Loyalty Points</span>
-                        <div class="point-total" data-bind="points">100,000</div>
+                        <div class="point-total" data-bind="points">0</div>
                       </div>
                       <div class="timer">
                         <span class="tiny-label">Progress Goal</span>
-                        <strong><span data-bind="pointsShort">100,000</span> / 550,000</strong>
+                        <strong><span data-bind="pointsShort">0</span> / 550,000</strong>
                       </div>
                     </div>
                     <div class="progress-track" data-bind-style="progress"></div>
@@ -1230,6 +1230,16 @@
                         <span class="tile-icon">C</span>
                         <span class="game-title">Card Sort</span>
                         <span class="earn-label">Example title, per game</span>
+                      </button>
+                      <button class="game-tile" data-route="game" data-action="openWordle">
+                        <span class="tile-icon">L</span>
+                        <span class="game-title">Letter Match</span>
+                        <span class="earn-label">Example title, per round</span>
+                      </button>
+                      <button class="game-tile" data-route="game" data-action="openWordle">
+                        <span class="tile-icon">T</span>
+                        <span class="game-title">Trivia Stack</span>
+                        <span class="earn-label">Example title, per challenge</span>
                       </button>
                     </div>
                   </div>
@@ -1315,7 +1325,7 @@
                     <div class="cashout-avatar" aria-hidden="true">•</div>
                     <span class="tiny-label">Thanks for Playing</span>
                     <h3 style="margin: 4px 0 0">Your total unclaimed earnings are</h3>
-                    <div class="cashout-amount" data-bind="balance">$5.00</div>
+                    <div class="cashout-amount" data-bind="balance">$6.00</div>
                     <a
                       href="#providerSelect"
                       class="inline-btn solid"
@@ -1325,7 +1335,7 @@
                       Cashout!
                     </a>
                     <p class="earn-label" style="margin: 12px 0 4px">
-                      Next earnings cycle: <span data-bind="timer">02:59:59</span>
+                      Next earnings cycle: <span data-bind="timer">01:00</span>
                     </p>
                     <button class="cashout-help" data-action="showAccumulationInfo">
                       Can I accumulate my earnings?
@@ -1453,7 +1463,7 @@
                     <p style="color: var(--copy); margin: 0">
                       Please review your payment details and confirm.
                     </p>
-                    <div class="cashout-amount" data-bind="balance">$5.00</div>
+                    <div class="cashout-amount" data-bind="balance">$6.00</div>
                     <div class="review-lines">
                       <span>Name: <span data-bind="cashoutName">Demo User</span></span>
                       <span>Email Address: <span data-bind="cashoutEmail">demo@example.com</span></span>
@@ -1519,7 +1529,7 @@
                         <strong>Loyalty Progress</strong>
                         <div class="earn-label">Current cycle state</div>
                       </div>
-                      <span class="pill" data-bind="pointsShort">100,000</span>
+                      <span class="pill" data-bind="pointsShort">0</span>
                     </div>
                     <div class="profile-row">
                       <span class="row-icon">C</span>
@@ -1657,7 +1667,7 @@
               <div class="state-grid">
                 <div class="state-card">
                   <span>Points</span>
-                  <strong data-bind="points">100,000</strong>
+                  <strong data-bind="points">0</strong>
                 </div>
                 <div class="state-card">
                   <span>Goal</span>
@@ -1665,7 +1675,7 @@
                 </div>
                 <div class="state-card">
                   <span>Balance</span>
-                  <strong data-bind="balance">$0.25</strong>
+                  <strong data-bind="balance">$6.00</strong>
                 </div>
                 <div class="state-card">
                   <span>Boost Uses</span>
@@ -1736,8 +1746,8 @@
       const CYCLE_SECONDS = 60;
       const POINTS_PER_DOLLAR = 100000;
       const START_STATE = {
-        points: 100000,
-        balance: 5,
+        points: 0,
+        balance: 6,
         gems: 100000,
         boostUses: 0,
         goldActive: false,
@@ -1803,6 +1813,24 @@
         }
       }
 
+      function resetScreenScroll() {
+        const appScreen = $(".app-screen");
+        if (!appScreen) return;
+        appScreen.scrollTop = 0;
+        appScreen.scrollLeft = 0;
+        requestAnimationFrame(() => {
+          appScreen.scrollTop = 0;
+          appScreen.scrollLeft = 0;
+        });
+      }
+
+      function focusPhoneFromPresenter(target) {
+        if (!target.closest(".panel-stack")) return;
+        const phoneWrap = $(".phone-wrap");
+        if (!phoneWrap) return;
+        phoneWrap.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
       function setView(view, options = {}) {
         if (!routedScreens.has(view)) view = "home";
         state.activeScreen = view;
@@ -1828,6 +1856,7 @@
             );
           }
         });
+        if (options.preserveScroll !== true) resetScreenScroll();
         if (options.updateHash !== false) syncRouteHash(view);
       }
 
@@ -2231,12 +2260,14 @@
         if (routeTarget) {
           event.preventDefault();
           routeFromElement(routeTarget);
+          focusPhoneFromPresenter(target);
           return;
         }
         const actionTarget = target.closest("[data-action]");
         if (actionTarget) {
           event.preventDefault();
           handleAction(actionTarget.dataset.action, actionTarget);
+          focusPhoneFromPresenter(target);
         }
       });
 
