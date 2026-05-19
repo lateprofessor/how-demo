@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Word Cash Loyalty UI PRD</title>
+    <meta
+      name="description"
+      content="UI PRD for a first-party game hub with loyalty progress, cashout, and partner fulfillment screens."
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #151515;
+        --muted: #5d5d5d;
+        --soft: #f5f5f3;
+        --panel: #ffffff;
+        --line: #d8d8d2;
+        --line-strong: #9a9a92;
+        --shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+        --max: 1180px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: #ededeb;
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+
+      h1,
+      h2,
+      h3,
+      p,
+      li,
+      strong,
+      blockquote {
+        overflow-wrap: anywhere;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .page-shell {
+        min-height: 100vh;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 1px solid var(--line);
+        background: rgba(237, 237, 235, 0.94);
+        backdrop-filter: blur(16px);
+      }
+
+      .topbar-inner {
+        max-width: var(--max);
+        width: calc(100% - 40px);
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 14px 0;
+      }
+
+      .brand-lockup {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .mark {
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--ink);
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        letter-spacing: 0;
+        flex: 0 0 auto;
+      }
+
+      .brand-lockup span {
+        color: var(--muted);
+        display: block;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .brand-lockup strong {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #303030;
+        font-size: 14px;
+      }
+
+      nav a {
+        border: 1px solid transparent;
+        padding: 8px 10px;
+        text-decoration: none;
+      }
+
+      nav a:hover,
+      nav a:focus-visible {
+        border-color: var(--line-strong);
+        outline: none;
+        background: #fff;
+      }
+
+      main {
+        max-width: var(--max);
+        width: calc(100% - 40px);
+        margin: 0 auto;
+      }
+
+      .hero {
+        padding: 64px 0 36px;
+      }
+
+      .eyebrow {
+        color: #4f4f4a;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin: 0 0 18px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        line-height: 1.05;
+        letter-spacing: 0;
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 930px;
+        font-size: clamp(42px, 7vw, 86px);
+      }
+
+      .hero-copy {
+        max-width: 760px;
+        color: #373734;
+        font-size: clamp(18px, 2.2vw, 24px);
+        margin: 24px 0 0;
+      }
+
+      .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        border: 1px solid var(--line);
+        background: var(--line);
+        margin-top: 44px;
+      }
+
+      .meta-card {
+        background: var(--panel);
+        padding: 22px;
+        min-height: 142px;
+      }
+
+      .meta-card span,
+      .section-kicker {
+        color: var(--muted);
+        display: block;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .meta-card strong {
+        display: block;
+        font-size: 21px;
+        line-height: 1.2;
+        margin-top: 12px;
+      }
+
+      .section {
+        padding: 56px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .section-heading {
+        display: grid;
+        grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.4fr);
+        gap: 40px;
+        align-items: start;
+        margin-bottom: 28px;
+      }
+
+      h2 {
+        font-size: clamp(28px, 3.8vw, 48px);
+      }
+
+      .section-heading p {
+        margin: 4px 0 0;
+        color: #3f3f3b;
+        font-size: 18px;
+      }
+
+      .notice {
+        border: 1px solid #202020;
+        background: #fff;
+        box-shadow: var(--shadow);
+        display: grid;
+        grid-template-columns: 48px minmax(0, 1fr);
+        gap: 18px;
+        padding: 24px;
+        margin: 28px 0 0;
+      }
+
+      .notice-icon {
+        border: 1px solid var(--ink);
+        display: grid;
+        height: 48px;
+        place-items: center;
+        width: 48px;
+      }
+
+      .notice p {
+        color: #333;
+        margin: 0;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+      }
+
+      .content-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 26px;
+      }
+
+      .content-card h3 {
+        font-size: 23px;
+        margin-bottom: 16px;
+      }
+
+      .content-card p {
+        color: #3e3e3a;
+        margin: 0 0 14px;
+      }
+
+      .content-card p:last-child {
+        margin-bottom: 0;
+      }
+
+      ul.clean-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      ul.clean-list li {
+        border-top: 1px solid var(--line);
+        color: #3b3b38;
+        padding: 13px 0;
+      }
+
+      ul.clean-list li:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .wireframe-frame {
+        background: #fafafa;
+        border: 1px solid #cfcfca;
+        box-shadow: var(--shadow);
+        margin: 0;
+        padding: 10px;
+      }
+
+      .wireframe-frame img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .final-render-frame img {
+        margin: 0 auto;
+        max-width: 430px;
+      }
+
+      .wireframe-caption {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        color: var(--muted);
+        font-size: 13px;
+        padding: 12px 4px 2px;
+      }
+
+      .wireframe-caption a {
+        text-underline-offset: 3px;
+      }
+
+      .workflow {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        counter-reset: step;
+      }
+
+      .step {
+        background: #fff;
+        border: 1px solid var(--line);
+        min-height: 210px;
+        padding: 22px;
+        position: relative;
+      }
+
+      .step::before {
+        counter-increment: step;
+        content: counter(step);
+        border: 1px solid var(--ink);
+        display: grid;
+        font-weight: 800;
+        height: 34px;
+        left: 22px;
+        place-items: center;
+        position: absolute;
+        top: 22px;
+        width: 34px;
+      }
+
+      .step h3 {
+        font-size: 21px;
+        padding-top: 58px;
+      }
+
+      .step p {
+        color: #44443f;
+        margin: 12px 0 0;
+      }
+
+      .boundary-table {
+        border: 1px solid var(--line);
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        background: var(--line);
+        gap: 1px;
+      }
+
+      .boundary-col {
+        background: #fff;
+      }
+
+      .boundary-col h3 {
+        border-bottom: 1px solid var(--line);
+        font-size: 21px;
+        padding: 20px 22px;
+      }
+
+      .boundary-col ul {
+        list-style: none;
+        margin: 0;
+        padding: 0 22px 18px;
+      }
+
+      .boundary-col li {
+        border-top: 1px solid var(--line);
+        color: #3c3c38;
+        padding: 14px 0;
+      }
+
+      .boundary-col li:first-child {
+        border-top: 0;
+      }
+
+      .language-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .language-box {
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 24px;
+      }
+
+      .language-box h3 {
+        font-size: 22px;
+        margin-bottom: 14px;
+      }
+
+      .language-box blockquote {
+        border-left: 3px solid #2b2b2b;
+        color: #2d2d2a;
+        font-size: 18px;
+        margin: 0;
+        padding-left: 16px;
+      }
+
+      .do-dont {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        background: var(--line);
+        border: 1px solid var(--line);
+      }
+
+      .do-dont > div {
+        background: #fff;
+        padding: 24px;
+      }
+
+      .footer {
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+        padding: 34px 0 52px;
+      }
+
+      .footer a {
+        text-underline-offset: 3px;
+      }
+
+      @media (max-width: 900px) {
+        .topbar-inner,
+        main {
+          width: calc(100% - 28px);
+        }
+
+        .topbar-inner {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        nav {
+          width: 100%;
+          flex-wrap: wrap;
+          overflow-x: visible;
+        }
+
+        .meta-grid,
+        .section-heading,
+        .split,
+        .workflow,
+        .boundary-table,
+        .language-grid,
+        .do-dont {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          padding-top: 42px;
+        }
+
+        .wireframe-caption {
+          flex-direction: column;
+        }
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+
+        .topbar {
+          position: static;
+        }
+
+        nav {
+          display: none;
+        }
+
+        .section {
+          break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div class="brand-lockup" aria-label="Document title">
+            <div class="mark">LP</div>
+            <div>
+              <span>Partner review draft</span>
+              <strong>Word Cash Loyalty UI PRD</strong>
+            </div>
+          </div>
+          <nav aria-label="Page sections">
+            <a href="#scope">Scope</a>
+            <a href="#wireframes">Wireframes</a>
+            <a href="#flow">User Flow</a>
+            <a href="#boundaries">Boundaries</a>
+            <a href="#language">Copy</a>
+            <a href="#final-render">Final Render</a>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="page-title">
+          <p class="eyebrow">Product UI reference for partner integration</p>
+          <h1 id="page-title">Word Cash loyalty and cashout experience.</h1>
+          <p class="hero-copy">
+            This page describes the player-facing screens, progression model, cashout entry point,
+            and partner fulfillment handoff for a first-party mobile game hub. It focuses on what
+            the player sees and how each step moves through the interface.
+          </p>
+
+          <div class="meta-grid" aria-label="Document summary">
+            <div class="meta-card">
+              <span>Audience</span>
+              <strong>Product, design, engineering, API, SDK, and partner implementation teams.</strong>
+            </div>
+            <div class="meta-card">
+              <span>Focus</span>
+              <strong>Wireframes, user language, cashout handoff, and screen ownership.</strong>
+            </div>
+            <div class="meta-card">
+              <span>Out Of Scope</span>
+              <strong>Backend calculations, reconciliation, fraud tooling, and partner settlement logic.</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="scope" aria-labelledby="scope-heading">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">Product scope</span>
+              <h2 id="scope-heading">What the app is</h2>
+            </div>
+            <p>
+              The product is a first-party mobile game hub. Players browse lightweight games,
+              track loyalty progress, and use a cashout entry point when an available balance is
+              ready for partner fulfillment.
+            </p>
+          </div>
+
+          <div class="notice" role="note">
+            <div class="notice-icon" aria-hidden="true">!</div>
+            <p>
+              Loyalty Points are shown as progress toward the current cycle. The cashout module
+              appears as a separate action when a user has an available unclaimed balance.
+            </p>
+          </div>
+
+          <div class="split" style="margin-top: 24px">
+            <article class="content-card">
+              <h3>User-facing components</h3>
+              <ul class="clean-list">
+                <li>Home hub with unclaimed balance, cycle timer, loyalty progress, and game catalog.</li>
+                <li>Game tiles with generic earn labels such as per game, per puzzle, or per level.</li>
+                <li>Optional store for gameplay currency and time-limited Gold Club benefits.</li>
+                <li>User-initiated cashout flow handled through the partner SDK or API.</li>
+                <li>Lightweight non-blocking loyalty notifications after qualifying play events.</li>
+              </ul>
+            </article>
+
+            <article class="content-card">
+              <h3>Experience rules</h3>
+              <ul class="clean-list">
+                <li>Loyalty progress, timer status, and cashout state are visually distinct.</li>
+                <li>Game tiles use ordinary puzzle, word, card, and grid-game presentation.</li>
+                <li>Store purchases support gameplay currency and Gold Club timing only.</li>
+                <li>Reward provider options, redemption terms, and fulfillment status remain partner-controlled.</li>
+                <li>Production copy and edge states should be approved before launch.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="wireframes" aria-labelledby="wireframes-heading">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">Greyscale UI</span>
+              <h2 id="wireframes-heading">Re-rendered wireframes</h2>
+            </div>
+            <p>
+              The wireframes below show the planned screen structure across the home hub, store,
+              cashout sequence, reward history, and in-game notifications. Labels focus on screen
+              ownership and player-visible states.
+            </p>
+          </div>
+
+          <figure class="wireframe-frame">
+            <a href="assets/wireframes-greyscale.png" aria-label="Open full-size wireframe sheet">
+              <img
+                src="assets/wireframes-greyscale.png"
+                alt="Greyscale wireframe sheet showing Home Hub, Store and Gold Club, Coupon Conversion, and In-Game Notifications."
+              />
+            </a>
+            <figcaption class="wireframe-caption">
+              <span>Generated greyscale wireframe sheet for product and partner review.</span>
+              <a href="assets/wireframes-greyscale.png">Open full-size asset</a>
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="section" id="flow" aria-labelledby="flow-heading">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">User journey</span>
+              <h2 id="flow-heading">Cashout flow</h2>
+            </div>
+            <p>
+              The experience is structured so the player can see progress, open the cashout entry
+              point, choose a provider, and complete fulfillment through the partner-controlled flow.
+            </p>
+          </div>
+
+          <div class="workflow" aria-label="Primary user flow">
+            <article class="step">
+              <h3>Open Home</h3>
+              <p>
+                The player lands on the hub and sees current progress, an available balance area,
+                a cycle timer, and game options.
+              </p>
+            </article>
+            <article class="step">
+              <h3>Play Games</h3>
+              <p>
+                The player chooses a game. Loyalty notifications may appear after qualifying
+                events without blocking gameplay.
+              </p>
+            </article>
+            <article class="step">
+              <h3>Choose Convert</h3>
+              <p>
+                When a balance is available, the player may open the cashout entry point and select
+                a provider from the available options.
+              </p>
+            </article>
+            <article class="step">
+              <h3>Partner Fulfillment</h3>
+              <p>
+                Provider selection, required account details, confirmation, and fulfillment status
+                are handled by the partner API or SDK.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="boundaries" aria-labelledby="boundaries-heading">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">Integration boundaries</span>
+              <h2 id="boundaries-heading">Responsibilities</h2>
+            </div>
+            <p>
+              This structure keeps the app UI, loyalty progress layer, and partner fulfillment
+              flow separated for clearer implementation ownership.
+            </p>
+          </div>
+
+          <div class="boundary-table">
+            <article class="boundary-col">
+              <h3>App UI Owns</h3>
+              <ul>
+                <li>Home hub layout and navigation.</li>
+                <li>Loyalty progress display and cycle status.</li>
+                <li>Safe game catalog presentation.</li>
+                <li>Entry point into cashout.</li>
+                <li>Post-conversion success or return state.</li>
+              </ul>
+            </article>
+            <article class="boundary-col">
+              <h3>Partner Flow Owns</h3>
+              <ul>
+                <li>Provider catalog availability.</li>
+                <li>Provider terms, restrictions, and redemption instructions.</li>
+                <li>Partner-hosted selection or confirmation UI.</li>
+                <li>Fulfillment status and transaction identifiers.</li>
+                <li>Partner-required disclosures and support content.</li>
+              </ul>
+            </article>
+            <article class="boundary-col">
+              <h3>Shared Review Owns</h3>
+              <ul>
+                <li>Approved user-facing copy.</li>
+                <li>Privacy and data minimization requirements.</li>
+                <li>Age, geography, and eligibility constraints where applicable.</li>
+                <li>Error states for unavailable providers or failed fulfillment.</li>
+                <li>Launch review across app, store, and partner surfaces.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="language" aria-labelledby="language-heading">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">Suggested copy</span>
+              <h2 id="language-heading">User language set</h2>
+            </div>
+            <p>
+              The language should be plain and operational. It should explain what the user can see,
+              what action is available, and where partner terms apply.
+            </p>
+          </div>
+
+          <div class="language-grid">
+            <article class="language-box">
+              <h3>Home hub</h3>
+              <blockquote>
+                Play participating games to build loyalty progress during the active cycle.
+                Available cashout options may vary by account, location, and partner terms.
+              </blockquote>
+            </article>
+            <article class="language-box">
+              <h3>Cashout entry</h3>
+              <blockquote>
+                Cash out your available balance through a supported provider. Availability and
+                redemption terms are provided by the selected partner.
+              </blockquote>
+            </article>
+            <article class="language-box">
+              <h3>Store</h3>
+              <blockquote>
+                Gem packages support gameplay. Eligible packages may include a time-limited
+                Gold Club benefit. Cashout availability is shown separately in the cashout module.
+              </blockquote>
+            </article>
+            <article class="language-box">
+              <h3>Notification</h3>
+              <blockquote>
+                Loyalty progress updated. Keep playing participating games to continue building
+                progress during the current cycle.
+              </blockquote>
+            </article>
+          </div>
+
+          <div class="do-dont" style="margin-top: 24px">
+            <div>
+              <h3>Use</h3>
+              <ul class="clean-list">
+                <li>Available balance</li>
+                <li>Loyalty progress</li>
+                <li>Participating games</li>
+                <li>Partner terms apply</li>
+                <li>May vary by account, location, and availability</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Reserve for internal docs</h3>
+              <ul class="clean-list">
+                <li>Backend calculation details</li>
+                <li>Cycle-level reconciliation</li>
+                <li>Forecasting and optimization assumptions</li>
+                <li>Eligibility scoring and fraud signals</li>
+                <li>Partner settlement and operational economics</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="review-heading">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">Launch notes</span>
+              <h2 id="review-heading">Open implementation items</h2>
+            </div>
+            <p>
+              The items below should be resolved with the owning product, engineering, and partner
+              teams before the experience moves into production.
+            </p>
+          </div>
+
+          <div class="split">
+            <article class="content-card">
+              <h3>Before integration approval</h3>
+              <ul class="clean-list">
+                <li>Confirm partner requirements for provider display, expiration, disclosures, and support.</li>
+                <li>Confirm whether eligibility gates are required by age, state, device, or account status.</li>
+                <li>Confirm the exact copy for unavailable providers, failed cashout, and reversed issuance.</li>
+                <li>Confirm privacy and data-sharing disclosures for all partner API or SDK events.</li>
+              </ul>
+            </article>
+            <article class="content-card">
+              <h3>What remains internal</h3>
+              <ul class="clean-list">
+                <li>Calculation logic for balances, goals, and cycle updates.</li>
+                <li>Ad monetization attribution, projections, and reconciliation.</li>
+                <li>Fraud, abuse, and eligibility scoring.</li>
+                <li>Operational economics and partner settlement details.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="final-render" aria-labelledby="final-render-heading">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">Visual reference</span>
+              <h2 id="final-render-heading">Final render</h2>
+            </div>
+            <p>
+              This render shows the target visual direction for the Word Cash home screen, including
+              the cashout header, loyalty progress, gem balance, daily boost, puzzle tiles, and
+              bottom navigation.
+            </p>
+          </div>
+
+          <figure class="wireframe-frame final-render-frame">
+            <a href="assets/final-render-word-cash.png" aria-label="Open full-size final render">
+              <img
+                src="assets/final-render-word-cash.png"
+                alt="Final render of the Word Cash home screen showing cashout amount, loyalty progress, gem balance, daily gem boost, puzzle game tiles, and bottom navigation."
+              />
+            </a>
+            <figcaption class="wireframe-caption">
+              <span>Final render reference for the Word Cash home screen.</span>
+              <a href="assets/final-render-word-cash.png">Open full-size asset</a>
+            </figcaption>
+          </figure>
+        </section>
+
+        <footer class="footer">
+          Draft page prepared May 19, 2026 for product, design, engineering, and partner
+          implementation review.
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

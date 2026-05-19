@@ -1,0 +1,2260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loyalty Platform Interactive Demo</title>
+    <meta
+      name="description"
+      content="Interactive wireframe demo for loyalty progress, cashout, coupon conversion, and a coupon word puzzle."
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #151515;
+        --copy: #30302d;
+        --muted: #64645f;
+        --line: #d7d7d0;
+        --line-strong: #8f8f87;
+        --paper: #f0f0ed;
+        --panel: #ffffff;
+        --soft: #f7f7f4;
+        --active: #242424;
+        --ok: #e8f4ea;
+        --warn: #f5f0de;
+        --shadow: 0 24px 70px rgba(0, 0, 0, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.4;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button,
+      a[role="button"] {
+        cursor: pointer;
+      }
+
+      a[role="button"] {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .demo-shell {
+        min-height: 100vh;
+        padding: 24px;
+      }
+
+      .demo-header {
+        max-width: 1320px;
+        margin: 0 auto 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--ink);
+        background: var(--panel);
+        font-weight: 850;
+      }
+
+      .brand span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .brand strong {
+        display: block;
+        font-size: clamp(20px, 3vw, 32px);
+        line-height: 1.05;
+      }
+
+      .header-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+
+      .demo-grid {
+        max-width: 1320px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(360px, 430px) minmax(360px, 1fr);
+        gap: 24px;
+        align-items: start;
+      }
+
+      .phone-wrap {
+        position: sticky;
+        top: 20px;
+        display: grid;
+        place-items: center;
+      }
+
+      .phone {
+        width: min(100%, 410px);
+        aspect-ratio: 390 / 844;
+        border: 4px solid var(--active);
+        border-radius: 36px;
+        background: #fff;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .phone::before {
+        content: "";
+        position: absolute;
+        top: 11px;
+        left: 50%;
+        width: 76px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--active);
+        transform: translateX(-50%);
+        z-index: 2;
+      }
+
+      .app {
+        height: 100%;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        background: #fafafa;
+      }
+
+      .app-header {
+        padding: 28px 16px 10px;
+        border-bottom: 1px solid var(--line);
+        background: #fff;
+      }
+
+      .top-row,
+      .balance-row,
+      .phone-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .menu-dot {
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        background: var(--soft);
+      }
+
+      .app-title {
+        font-weight: 850;
+      }
+
+      .cashout-chip {
+        border: 1px solid var(--ink);
+        background: #fff;
+        padding: 8px 10px;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .balance-row {
+        margin-top: 10px;
+      }
+
+      .tiny-label {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+
+      .balance-value {
+        display: block;
+        font-size: 22px;
+        font-weight: 850;
+        line-height: 1;
+      }
+
+      .app-screen {
+        min-height: 0;
+        overflow: hidden auto;
+        padding: 14px 14px 18px;
+      }
+
+      .screen {
+        display: none;
+      }
+
+      .screen.is-active {
+        display: block;
+      }
+
+      .app.is-cashout-flow {
+        grid-template-rows: 1fr;
+      }
+
+      .app.is-cashout-flow .app-header,
+      .app.is-cashout-flow .phone-nav {
+        display: none;
+      }
+
+      .app.is-cashout-flow .app-screen {
+        padding: 0;
+      }
+
+      .cashout-screen {
+        min-height: 100%;
+        display: grid;
+        align-content: start;
+        gap: 12px;
+        padding: 24px 14px 18px;
+        background: linear-gradient(#fbfbf8, #f0f0ed);
+      }
+
+      .cashout-top {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 2px;
+      }
+
+      .cashout-top h2 {
+        margin: 0;
+        text-align: center;
+        font-size: 20px;
+        line-height: 1.1;
+      }
+
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line-strong);
+        background: #fff;
+        color: var(--ink);
+        font-weight: 900;
+      }
+
+      .cashout-hero {
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 18px 14px;
+        text-align: center;
+      }
+
+      .cashout-avatar {
+        width: 72px;
+        height: 72px;
+        display: grid;
+        place-items: center;
+        margin: 2px auto 12px;
+        border: 2px solid var(--line-strong);
+        border-radius: 50%;
+        background: var(--soft);
+        font-size: 30px;
+        font-weight: 900;
+      }
+
+      .cashout-amount {
+        font-size: 42px;
+        font-weight: 950;
+        line-height: 1;
+        margin: 8px 0 12px;
+      }
+
+      .cashout-help {
+        color: #6a35a8;
+        border: 0;
+        background: transparent;
+        padding: 0;
+        font-size: 12px;
+        font-weight: 850;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      .quick-providers {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .provider-chip {
+        min-height: 52px;
+        border: 1px solid var(--line-strong);
+        background: #fff;
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .provider-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .provider-option {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+        align-items: center;
+        min-height: 60px;
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 10px;
+        text-align: left;
+      }
+
+      .provider-option small {
+        color: var(--muted);
+        display: block;
+        font-weight: 800;
+        margin-top: 2px;
+      }
+
+      .cashout-form {
+        display: grid;
+        gap: 10px;
+      }
+
+      .form-field {
+        display: grid;
+        gap: 5px;
+      }
+
+      .form-field label {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .form-field input {
+        min-width: 0;
+        border: 1px solid var(--line-strong);
+        background: #fff;
+        padding: 10px;
+      }
+
+      .field-error {
+        color: #b32828;
+        display: none;
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .form-field.is-invalid .field-error {
+        display: inline;
+      }
+
+      .why-box {
+        border: 1px solid var(--line-strong);
+        background: var(--soft);
+        padding: 12px;
+        color: var(--copy);
+        font-size: 12px;
+      }
+
+      .why-box strong {
+        color: #6a35a8;
+        display: block;
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+
+      .form-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .confirmation-card {
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 18px 14px;
+        text-align: center;
+      }
+
+      .confirmation-card h3 {
+        font-size: 20px;
+        margin: 0 0 10px;
+      }
+
+      .review-lines {
+        border-top: 1px solid var(--line);
+        margin-top: 14px;
+        padding-top: 12px;
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+        font-weight: 800;
+      }
+
+      .success-card {
+        border: 1px solid var(--line);
+        background: #fff;
+        margin-top: 48px;
+        padding: 26px 18px;
+        text-align: center;
+      }
+
+      .gift-icon {
+        width: 88px;
+        height: 64px;
+        display: grid;
+        place-items: center;
+        margin: 10px auto 18px;
+        border: 1px solid var(--line-strong);
+        background: var(--soft);
+        font-size: 34px;
+      }
+
+      .history-total {
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 14px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .history-total strong {
+        display: block;
+        font-size: 28px;
+        line-height: 1;
+      }
+
+      .reward-status {
+        border: 1px solid var(--line-strong);
+        background: var(--soft);
+        padding: 4px 7px;
+        font-size: 10px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .reward-status.approved {
+        background: var(--ok);
+      }
+
+      .reward-status.pending {
+        background: var(--warn);
+      }
+
+      .reward-status.failed {
+        background: #f4e7e7;
+      }
+
+      .wire-card {
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+
+      .wire-card h2,
+      .wire-card h3 {
+        margin: 0;
+        line-height: 1.1;
+      }
+
+      .wire-card h2 {
+        font-size: 18px;
+      }
+
+      .wire-card h3 {
+        font-size: 15px;
+      }
+
+      .loyalty-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .point-total {
+        margin-top: 6px;
+        font-size: 34px;
+        font-weight: 900;
+        line-height: 1;
+      }
+
+      .timer {
+        text-align: right;
+      }
+
+      .progress-track {
+        margin-top: 14px;
+        height: 14px;
+        border: 1px solid var(--ink);
+        background:
+          linear-gradient(90deg, #202020 var(--progress, 0%), transparent 0),
+          repeating-linear-gradient(90deg, transparent 0 24.5%, #b9b9b2 24.5% 25%);
+      }
+
+      .milestones {
+        margin-top: 7px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .status-strip {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 10px;
+      }
+
+      .boost-meter {
+        display: grid;
+        grid-template-columns: repeat(3, 18px);
+        gap: 4px;
+      }
+
+      .boost-dot {
+        height: 18px;
+        border: 1px solid var(--line-strong);
+        background: #fff;
+      }
+
+      .boost-dot.is-used {
+        background: var(--active);
+      }
+
+      .game-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .game-tile {
+        min-height: 114px;
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 10px;
+        text-align: left;
+        display: grid;
+        gap: 7px;
+        align-content: start;
+      }
+
+      .game-tile:hover,
+      .game-tile:focus-visible,
+      .phone-nav button:hover,
+      .phone-nav button:focus-visible,
+      .control-btn:hover,
+      .control-btn:focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: 2px;
+      }
+
+      .tile-icon {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line-strong);
+        background: var(--soft);
+        font-weight: 900;
+      }
+
+      .game-title {
+        font-weight: 850;
+      }
+
+      .earn-label {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 750;
+      }
+
+      .store-row,
+      .coupon-row,
+      .profile-row {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+        align-items: center;
+        border-top: 1px solid var(--line);
+        padding: 10px 0;
+      }
+
+      .store-row:first-of-type,
+      .coupon-row:first-of-type,
+      .profile-row:first-of-type {
+        border-top: 0;
+      }
+
+      .row-icon {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line-strong);
+        background: var(--soft);
+        font-weight: 850;
+      }
+
+      .pill {
+        border: 1px solid var(--line-strong);
+        background: var(--soft);
+        padding: 6px 8px;
+        font-size: 11px;
+        font-weight: 850;
+        white-space: nowrap;
+      }
+
+      .wordle-board {
+        display: grid;
+        grid-template-rows: repeat(6, 1fr);
+        gap: 7px;
+        margin: 12px 0;
+      }
+
+      .wordle-row {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 7px;
+      }
+
+      .wordle-cell {
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line-strong);
+        background: #fff;
+        font-weight: 900;
+        font-size: 18px;
+        text-transform: uppercase;
+      }
+
+      .wordle-cell.hit {
+        background: #222;
+        color: #fff;
+      }
+
+      .wordle-cell.near {
+        background: #d8d8d2;
+      }
+
+      .wordle-cell.miss {
+        background: #efefea;
+        color: #73736c;
+      }
+
+      .wordle-input-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+      }
+
+      .wordle-input-row input {
+        min-width: 0;
+        border: 1px solid var(--line-strong);
+        padding: 10px;
+        text-transform: uppercase;
+      }
+
+      .mini-keyboard {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .mini-keyboard button {
+        border: 1px solid var(--line);
+        background: var(--soft);
+        padding: 8px 0;
+        font-weight: 800;
+      }
+
+      .empty-state {
+        border: 1px dashed var(--line-strong);
+        padding: 18px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .phone-nav {
+        border-top: 1px solid var(--line);
+        background: #fff;
+        padding: 9px 10px 14px;
+      }
+
+      .phone-nav button {
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        display: grid;
+        gap: 3px;
+        place-items: center;
+        min-width: 58px;
+        padding: 5px;
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .phone-nav button[aria-selected="true"] {
+        color: var(--ink);
+      }
+
+      .nav-icon {
+        width: 24px;
+        height: 24px;
+        display: grid;
+        place-items: center;
+        border: 1px solid currentColor;
+        font-size: 12px;
+      }
+
+      .panel-stack {
+        display: grid;
+        gap: 18px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05);
+      }
+
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid var(--line);
+        padding: 18px 20px;
+      }
+
+      .panel-header h2 {
+        margin: 0;
+        font-size: 22px;
+        line-height: 1.1;
+      }
+
+      .panel-body {
+        padding: 20px;
+      }
+
+      .control-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .control-btn {
+        min-height: 76px;
+        border: 1px solid var(--line-strong);
+        background: var(--soft);
+        color: var(--ink);
+        padding: 12px;
+        text-align: left;
+      }
+
+      .control-btn strong,
+      .control-btn span {
+        display: block;
+      }
+
+      .control-btn strong {
+        font-size: 15px;
+      }
+
+      .control-btn span {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      .control-btn.primary {
+        background: var(--active);
+        color: #fff;
+      }
+
+      .control-btn.primary span {
+        color: #dfdfdb;
+      }
+
+      .control-btn.warn {
+        background: var(--warn);
+      }
+
+      .state-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1px;
+        background: var(--line);
+        border: 1px solid var(--line);
+      }
+
+      .state-card {
+        background: #fff;
+        min-height: 98px;
+        padding: 14px;
+      }
+
+      .state-card span {
+        color: var(--muted);
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .state-card strong {
+        display: block;
+        font-size: 24px;
+        line-height: 1.05;
+        margin-top: 8px;
+      }
+
+      .script-list,
+      .log-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .script-list li,
+      .log-list li {
+        border-top: 1px solid var(--line);
+        padding: 12px 0;
+      }
+
+      .script-list li:first-child,
+      .log-list li:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .script-list strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .script-list span,
+      .log-list span {
+        color: var(--muted);
+      }
+
+      .modal-layer {
+        position: absolute;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 22px;
+        background: rgba(247, 247, 244, 0.82);
+        backdrop-filter: blur(3px);
+        z-index: 4;
+      }
+
+      .modal-layer.is-open {
+        display: flex;
+      }
+
+      .modal {
+        width: 100%;
+        border: 2px solid var(--active);
+        background: #fff;
+        box-shadow: var(--shadow);
+        padding: 20px;
+        text-align: center;
+      }
+
+      .modal-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 12px;
+        display: grid;
+        place-items: center;
+        border: 2px solid var(--line-strong);
+        border-radius: 50%;
+        font-size: 28px;
+        font-weight: 900;
+      }
+
+      .modal h2 {
+        margin: 0 0 6px;
+      }
+
+      .modal p {
+        margin: 0 0 16px;
+        color: var(--copy);
+      }
+
+      .modal-actions {
+        display: grid;
+        gap: 8px;
+      }
+
+      .toast {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        top: 16px;
+        border: 1px solid var(--active);
+        background: #fff;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.13);
+        padding: 12px 14px;
+        display: none;
+        z-index: 6;
+      }
+
+      .toast.is-visible {
+        display: block;
+        animation: toast-in 240ms ease-out;
+      }
+
+      @keyframes toast-in {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .toast strong {
+        display: block;
+      }
+
+      .toast span {
+        color: var(--muted);
+        display: block;
+        font-size: 12px;
+        margin-top: 2px;
+      }
+
+      .toast.payout-toast {
+        grid-template-columns: 48px 1fr;
+        align-items: center;
+        gap: 12px;
+        background: #242424;
+        color: #fff;
+        padding: 14px;
+      }
+
+      .toast.payout-toast.is-visible {
+        display: grid;
+      }
+
+      .toast.payout-toast .payout-icon {
+        width: 48px;
+        height: 48px;
+        display: grid;
+        place-items: center;
+        border: 1px solid #fff;
+        border-radius: 50%;
+        background: #fff;
+        color: var(--ink);
+        font-size: 26px;
+        font-weight: 950;
+      }
+
+      .toast.payout-toast strong {
+        font-size: 26px;
+        line-height: 1;
+      }
+
+      .toast.payout-toast span {
+        color: #fff;
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .toast.loyalty-toast {
+        background: #242424;
+        color: #fff;
+        padding: 16px 18px;
+        text-align: center;
+      }
+
+      .toast.loyalty-toast strong {
+        font-size: 26px;
+        line-height: 1;
+      }
+
+      .toast.loyalty-toast span {
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 20px;
+        font-weight: 900;
+      }
+
+      .coin-dot {
+        width: 24px;
+        height: 24px;
+        display: inline-grid;
+        place-items: center;
+        border: 1px solid #fff;
+        border-radius: 50%;
+        background: #fff;
+        color: var(--ink);
+        font-size: 16px;
+        font-weight: 950;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .inline-btn {
+        border: 1px solid var(--line-strong);
+        background: #fff;
+        padding: 9px 11px;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .inline-btn.solid {
+        background: var(--active);
+        color: #fff;
+      }
+
+      .inline-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+      }
+
+      @media (max-width: 980px) {
+        .demo-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .phone-wrap {
+          position: static;
+        }
+
+        .phone {
+          max-width: 390px;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .demo-shell {
+          padding: 14px;
+        }
+
+        .demo-header {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .header-actions,
+        .control-grid,
+        .state-grid {
+          grid-template-columns: 1fr;
+          width: 100%;
+        }
+
+        .control-grid,
+        .state-grid {
+          display: grid;
+        }
+
+        .phone {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-shell">
+      <header class="demo-header">
+        <div class="brand">
+          <div class="brand-mark">LP</div>
+          <div>
+            <span>Interactive wireframe</span>
+            <strong>Loyalty Platform Demo</strong>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="inline-btn" data-action="resetDemo">Reset Demo</button>
+          <a class="inline-btn" href="compliance-prd.html">Open PRD</a>
+        </div>
+      </header>
+
+      <main class="demo-grid">
+        <section class="phone-wrap" aria-label="Interactive mobile app wireframe">
+          <div class="phone">
+            <div class="app">
+              <header class="app-header">
+                <div class="top-row">
+                  <div class="menu-dot" aria-hidden="true">=</div>
+                  <div class="app-title">Just Game</div>
+                  <button
+                    type="button"
+                    class="cashout-chip"
+                    data-route="cashout"
+                    data-action="cashout"
+                  >
+                    Cashout
+                  </button>
+                </div>
+                <div class="balance-row">
+                  <div>
+                    <span class="tiny-label">Available Balance</span>
+                    <span class="balance-value" data-bind="balance">$0.25</span>
+                  </div>
+                  <div class="timer">
+                    <span class="tiny-label">Cycle Timer</span>
+                    <strong data-bind="timer">02:59:59</strong>
+                  </div>
+                </div>
+              </header>
+
+              <div class="app-screen">
+                <section class="screen is-active" data-screen="home" aria-label="Home screen">
+                  <div class="wire-card">
+                    <div class="loyalty-head">
+                      <div>
+                        <span class="tiny-label">Loyalty Points</span>
+                        <div class="point-total" data-bind="points">100,000</div>
+                      </div>
+                      <div class="timer">
+                        <span class="tiny-label">Progress Goal</span>
+                        <strong><span data-bind="pointsShort">100,000</span> / 550,000</strong>
+                      </div>
+                    </div>
+                    <div class="progress-track" data-bind-style="progress"></div>
+                    <div class="milestones" aria-hidden="true">
+                      <span>25%</span>
+                      <span>50%</span>
+                      <span>75%</span>
+                      <span>Goal</span>
+                    </div>
+                  </div>
+
+                  <div class="status-strip" style="margin-bottom: 12px">
+                    <div>
+                      <strong>Optional Loyalty Boost</strong>
+                      <div class="earn-label" data-bind="boostStatus">Inactive, 3 uses available</div>
+                    </div>
+                    <div class="boost-meter" aria-label="Boost uses">
+                      <span class="boost-dot" data-boost-dot="0"></span>
+                      <span class="boost-dot" data-boost-dot="1"></span>
+                      <span class="boost-dot" data-boost-dot="2"></span>
+                    </div>
+                  </div>
+
+                  <div class="status-strip" style="margin-bottom: 12px">
+                    <div>
+                      <strong>Gems</strong>
+                      <div class="earn-label" data-bind="gems">100,000 available</div>
+                    </div>
+                    <button class="inline-btn" data-view="store">Add</button>
+                  </div>
+
+                  <div class="wire-card">
+                    <h2 style="margin-bottom: 10px">Game Collection</h2>
+                    <div class="game-grid">
+                      <button class="game-tile" data-route="game" data-action="openWordle">
+                        <span class="tile-icon">W</span>
+                        <span class="game-title">Word Puzzle</span>
+                        <span class="earn-label">Example title, per puzzle</span>
+                      </button>
+                      <button class="game-tile" data-route="game" data-action="openWordle">
+                        <span class="tile-icon">G</span>
+                        <span class="game-title">Arcade Word</span>
+                        <span class="earn-label">Example title, per game</span>
+                      </button>
+                      <button class="game-tile" data-route="game" data-action="openWordle">
+                        <span class="tile-icon">P</span>
+                        <span class="game-title">Puzzle Grid</span>
+                        <span class="earn-label">Example title, per level</span>
+                      </button>
+                      <button class="game-tile" data-route="game" data-action="openWordle">
+                        <span class="tile-icon">C</span>
+                        <span class="game-title">Card Sort</span>
+                        <span class="earn-label">Example title, per game</span>
+                      </button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="screen" data-screen="game" aria-label="Coupon word puzzle">
+                  <div class="wire-card">
+                    <div class="loyalty-head">
+                      <div>
+                        <span class="tiny-label">Example Game</span>
+                        <h2>Coupon Word Puzzle</h2>
+                      </div>
+                      <button class="inline-btn" data-view="home">Exit</button>
+                    </div>
+                    <div class="empty-state" style="margin-top: 12px">
+                      Guess the six-letter answer for this demo puzzle.
+                    </div>
+                    <div class="wordle-board" data-wordle-board aria-label="Word puzzle board"></div>
+                    <div class="wordle-input-row">
+                      <input
+                        data-wordle-input
+                        maxlength="6"
+                        autocomplete="off"
+                        spellcheck="false"
+                        aria-label="Word guess"
+                        placeholder="COUPON"
+                      />
+                      <button class="inline-btn solid" data-action="submitGuess">Guess</button>
+                    </div>
+                    <div class="mini-keyboard" data-keyboard aria-label="Puzzle keyboard"></div>
+                  </div>
+                </section>
+
+                <section class="screen" data-screen="store" aria-label="Store screen">
+                  <div class="wire-card">
+                    <div class="loyalty-head">
+                      <div>
+                        <span class="tiny-label">Gameplay Currency</span>
+                        <h2>Gem Store</h2>
+                      </div>
+                      <span class="pill">Gold Club optional</span>
+                    </div>
+                    <div class="store-row">
+                      <span class="row-icon">D</span>
+                      <div>
+                        <strong>5,000 Gems</strong>
+                        <div class="earn-label">Gameplay currency package</div>
+                      </div>
+                      <button class="pill" data-action="buyGems" data-gems="5000">Add</button>
+                    </div>
+                    <div class="store-row">
+                      <span class="row-icon">D</span>
+                      <div>
+                        <strong>50,000 Gems</strong>
+                        <div class="earn-label">Gameplay currency package</div>
+                      </div>
+                      <button class="pill" data-action="buyGems" data-gems="50000">Add</button>
+                    </div>
+                    <div class="store-row">
+                      <span class="row-icon">C</span>
+                      <div>
+                        <strong>Gold Club Bundle</strong>
+                        <div class="earn-label">Time-limited ad-experience benefit</div>
+                      </div>
+                      <button class="pill" data-action="activateGold">Activate</button>
+                    </div>
+                  </div>
+                </section>
+
+                <section
+                  class="screen cashout-screen"
+                  data-screen="cashoutSummary"
+                  aria-label="Cashout summary screen"
+                >
+                  <div class="cashout-top">
+                    <button class="icon-btn" data-view="home" aria-label="Back to game collection">
+                      ‹
+                    </button>
+                    <h2>Just Cards</h2>
+                    <button class="icon-btn" data-view="home" aria-label="Home">H</button>
+                  </div>
+                  <div class="cashout-hero">
+                    <div class="cashout-avatar" aria-hidden="true">•</div>
+                    <span class="tiny-label">Thanks for Playing</span>
+                    <h3 style="margin: 4px 0 0">Your total unclaimed earnings are</h3>
+                    <div class="cashout-amount" data-bind="balance">$5.00</div>
+                    <a
+                      href="#providerSelect"
+                      class="inline-btn solid"
+                      role="button"
+                      data-route="providerSelect"
+                    >
+                      Cashout!
+                    </a>
+                    <p class="earn-label" style="margin: 12px 0 4px">
+                      Next earnings cycle: <span data-bind="timer">02:59:59</span>
+                    </p>
+                    <button class="cashout-help" data-action="showAccumulationInfo">
+                      Can I accumulate my earnings?
+                    </button>
+                    <div class="quick-providers" aria-label="Quick provider choices">
+                      <a href="#cashoutForm:PayPal" class="provider-chip" role="button" data-route="cashoutForm" data-provider="PayPal">
+                        PayPal
+                      </a>
+                      <a href="#cashoutForm:Walmart%20eGift%20Card" class="provider-chip" role="button" data-route="cashoutForm" data-provider="Walmart eGift Card">
+                        Walmart
+                      </a>
+                      <a href="#cashoutForm:Google%20Play" class="provider-chip" role="button" data-route="cashoutForm" data-provider="Google Play">
+                        Google
+                      </a>
+                    </div>
+                  </div>
+                </section>
+
+                <section
+                  class="screen cashout-screen"
+                  data-screen="providerSelect"
+                  aria-label="Select payment provider screen"
+                >
+                  <div class="cashout-top">
+                    <button class="icon-btn" data-view="cashoutSummary" aria-label="Back">‹</button>
+                    <h2>Select a Payment Provider</h2>
+                    <button class="icon-btn" data-view="home" aria-label="Home">H</button>
+                  </div>
+                  <div class="provider-list">
+                    <a href="#cashoutForm:PayPal" class="provider-option" role="button" data-route="cashoutForm" data-provider="PayPal">
+                      <span class="row-icon">P</span>
+                      <span>
+                        <strong>Cash out with PayPal</strong>
+                        <small>Min $2.00</small>
+                      </span>
+                      <span>›</span>
+                    </a>
+                    <a href="#cashoutForm:Amazon.com%20Gift%20Card" class="provider-option" role="button" data-route="cashoutForm" data-provider="Amazon.com Gift Card">
+                      <span class="row-icon">A</span>
+                      <span><strong>Amazon.com Gift Card</strong></span>
+                      <span>›</span>
+                    </a>
+                    <a href="#cashoutForm:Walmart%20eGift%20Card" class="provider-option" role="button" data-route="cashoutForm" data-provider="Walmart eGift Card">
+                      <span class="row-icon">W</span>
+                      <span>
+                        <strong>Walmart eGift Card</strong>
+                        <small>Min $2.00</small>
+                      </span>
+                      <span>›</span>
+                    </a>
+                    <a href="#cashoutForm:Google%20Play" class="provider-option" role="button" data-route="cashoutForm" data-provider="Google Play">
+                      <span class="row-icon">G</span>
+                      <span><strong>Google Play</strong></span>
+                      <span>›</span>
+                    </a>
+                    <a href="#cashoutForm:Target%20GiftCard" class="provider-option" role="button" data-route="cashoutForm" data-provider="Target GiftCard">
+                      <span class="row-icon">T</span>
+                      <span><strong>Target GiftCard</strong></span>
+                      <span>›</span>
+                    </a>
+                    <a href="#cashoutForm:Burger%20King%20eGift" class="provider-option" role="button" data-route="cashoutForm" data-provider="Burger King eGift">
+                      <span class="row-icon">B</span>
+                      <span><strong>Burger King eGift</strong></span>
+                      <span>›</span>
+                    </a>
+                    <a href="#cashoutForm:Donate" class="provider-option" role="button" data-route="cashoutForm" data-provider="Donate">
+                      <span class="row-icon">D</span>
+                      <span><strong>Donate</strong></span>
+                      <span>›</span>
+                    </a>
+                  </div>
+                </section>
+
+                <section
+                  class="screen cashout-screen"
+                  data-screen="cashoutForm"
+                  aria-label="Cashout data screen"
+                >
+                  <div class="cashout-top">
+                    <button class="icon-btn" data-view="providerSelect" aria-label="Back">‹</button>
+                    <h2>Cash out with <span data-bind="provider">PayPal</span></h2>
+                    <span></span>
+                  </div>
+                  <div class="wire-card">
+                    <h3 style="margin-bottom: 12px">Enter Cashout Data</h3>
+                    <div class="cashout-form">
+                      <div class="form-field" data-field="email">
+                        <label for="cashout-email">
+                          Email Address* <span class="field-error">Required</span>
+                        </label>
+                        <input id="cashout-email" data-cashout-email autocomplete="email" />
+                      </div>
+                      <div class="form-field" data-field="name">
+                        <label for="cashout-name">Name* <span class="field-error">Required</span></label>
+                        <input id="cashout-name" data-cashout-name autocomplete="name" />
+                      </div>
+                      <div class="why-box">
+                        <strong>Why do we ask for this data?</strong>
+                        Provider account details are used to prepare the selected cashout request and
+                        may be required by the payment partner to complete fulfillment.
+                      </div>
+                      <p class="earn-label" style="text-align: center; margin: 0">
+                        Learn more<br />www.paypal.com
+                      </p>
+                      <div class="form-actions">
+                        <button class="inline-btn" data-view="providerSelect">Cancel</button>
+                        <button class="inline-btn solid" data-action="validateCashoutForm">Ok</button>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section
+                  class="screen cashout-screen"
+                  data-screen="confirmCashout"
+                  aria-label="Confirm cashout screen"
+                >
+                  <div class="cashout-top">
+                    <button class="icon-btn" data-view="cashoutForm" aria-label="Back">‹</button>
+                    <h2>Cash out with <span data-bind="provider">PayPal</span></h2>
+                    <span></span>
+                  </div>
+                  <div class="confirmation-card">
+                    <h3>We are about to payout your money!</h3>
+                    <p style="color: var(--copy); margin: 0">
+                      Please review your payment details and confirm.
+                    </p>
+                    <div class="cashout-amount" data-bind="balance">$5.00</div>
+                    <div class="review-lines">
+                      <span>Name: <span data-bind="cashoutName">Demo User</span></span>
+                      <span>Email Address: <span data-bind="cashoutEmail">demo@example.com</span></span>
+                    </div>
+                  </div>
+                  <button class="inline-btn solid" data-action="confirmCashout">Confirm</button>
+                </section>
+
+                <section
+                  class="screen cashout-screen"
+                  data-screen="rewardsHistory"
+                  aria-label="My rewards screen"
+                >
+                  <div class="cashout-top">
+                    <button class="icon-btn" data-view="home" aria-label="Back to game collection">
+                      ‹
+                    </button>
+                    <h2>My Rewards</h2>
+                    <button class="icon-btn" data-view="home" aria-label="Home">H</button>
+                  </div>
+                  <div class="history-total">
+                    <div>
+                      <span class="tiny-label">Lifetime Earnings</span>
+                      <strong data-bind="lifetimeEarnings">$1,000.00</strong>
+                    </div>
+                    <span class="row-icon">G</span>
+                  </div>
+                  <div class="wire-card">
+                    <div class="coupon-row">
+                      <span class="row-icon">P</span>
+                      <div>
+                        <strong>PayPal</strong>
+                        <div class="earn-label">Just now</div>
+                      </div>
+                      <span class="reward-status pending">Pending</span>
+                    </div>
+                    <div class="coupon-row">
+                      <span class="row-icon">P</span>
+                      <div>
+                        <strong>PayPal</strong>
+                        <div class="earn-label">Earlier today</div>
+                      </div>
+                      <span class="reward-status approved">Approved</span>
+                    </div>
+                    <div class="coupon-row">
+                      <span class="row-icon">P</span>
+                      <div>
+                        <strong>PayPal</strong>
+                        <div class="earn-label">Previous request</div>
+                      </div>
+                      <span class="reward-status failed">Failed</span>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="screen" data-screen="profile" aria-label="Profile screen">
+                  <div class="wire-card">
+                    <span class="tiny-label">Account</span>
+                    <h2>Profile</h2>
+                    <div class="profile-row">
+                      <span class="row-icon">P</span>
+                      <div>
+                        <strong>Loyalty Progress</strong>
+                        <div class="earn-label">Current cycle state</div>
+                      </div>
+                      <span class="pill" data-bind="pointsShort">100,000</span>
+                    </div>
+                    <div class="profile-row">
+                      <span class="row-icon">C</span>
+                      <div>
+                        <strong>Cashout Status</strong>
+                        <div class="earn-label" data-bind="couponStatus">No cashout selected</div>
+                      </div>
+                    </div>
+                    <div class="profile-row">
+                      <span class="row-icon">G</span>
+                      <div>
+                        <strong>Gold Club</strong>
+                        <div class="earn-label" data-bind="goldStatus">Inactive</div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <nav class="phone-nav" aria-label="App navigation">
+                <button data-view="home" aria-selected="true">
+                  <span class="nav-icon">H</span>
+                  Home
+                </button>
+                <button data-route="game" data-action="openWordle" aria-selected="false">
+                  <span class="nav-icon">G</span>
+                  Games
+                </button>
+                <button data-view="store" aria-selected="false">
+                  <span class="nav-icon">S</span>
+                  Store
+                </button>
+                <button data-route="cashout" data-action="cashout" aria-selected="false">
+                  <span class="nav-icon">C</span>
+                  Cashout
+                </button>
+                <button data-view="profile" aria-selected="false">
+                  <span class="nav-icon">P</span>
+                  Profile
+                </button>
+              </nav>
+            </div>
+
+            <div class="modal-layer" data-modal="noBalance" role="dialog" aria-modal="true">
+              <div class="modal">
+                <div class="modal-icon">i</div>
+                <h2>Keep playing</h2>
+                <p>
+                  Your coins will be converted to real rewards once the timer elapses.
+                </p>
+                <div class="modal-actions">
+                  <button class="inline-btn solid" data-action="closeModal">Ok</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-layer" data-modal="congratulations" role="dialog" aria-modal="true">
+              <div class="modal">
+                <div class="modal-icon">✓</div>
+                <h2>Congratulations</h2>
+                <p>
+                  Your cashout request was submitted. You are back on the game collection screen.
+                </p>
+                <div class="modal-actions">
+                  <button class="inline-btn solid" data-action="closeModal">Ok</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-layer" data-modal="levelComplete" role="dialog" aria-modal="true">
+              <div class="modal">
+                <div class="modal-icon">✓</div>
+                <h2>Level Complete</h2>
+                <p>Nice solve. Your loyalty progress has been updated.</p>
+                <div class="modal-actions">
+                  <button class="inline-btn solid" data-action="resetLevel">OK</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="toast" data-toast role="status" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <section class="panel-stack" aria-label="Presenter controls">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Presenter Controls</h2>
+              <span class="pill">No backend</span>
+            </div>
+            <div class="panel-body">
+              <div class="control-grid">
+                <button class="control-btn" data-action="addPoints" data-points="10000">
+                  <strong>Add 10,000 Points</strong>
+                  <span>Small qualifying event</span>
+                </button>
+                <button class="control-btn" data-action="addPoints" data-points="50000">
+                  <strong>Add 50,000 Points</strong>
+                  <span>Large demo update</span>
+                </button>
+                <button class="control-btn" data-action="addBalance" data-dollars="1">
+                  <strong>Add $1 Balance</strong>
+                  <span>Manual cashout balance</span>
+                </button>
+                <button class="control-btn" data-action="qualifyingEvent">
+                  <strong>Trigger Event</strong>
+                  <span>Shows in-game notification</span>
+                </button>
+                <button class="control-btn" data-action="useBoost">
+                  <strong>Use Boost</strong>
+                  <span>Updates boost state only</span>
+                </button>
+                <button class="control-btn primary" data-action="cashout">
+                  <strong>Trigger Cashout</strong>
+                  <span>Opens the payout summary flow</span>
+                </button>
+                <button class="control-btn warn" data-action="openWordle">
+                  <strong>Open Word Puzzle</strong>
+                  <span>Answer is COUPON</span>
+                </button>
+                <button class="control-btn" data-action="clearBalance">
+                  <strong>Clear Balance</strong>
+                  <span>Demo the no-balance message</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Live Demo State</h2>
+              <span class="pill">Simulated</span>
+            </div>
+            <div class="panel-body">
+              <div class="state-grid">
+                <div class="state-card">
+                  <span>Points</span>
+                  <strong data-bind="points">100,000</strong>
+                </div>
+                <div class="state-card">
+                  <span>Goal</span>
+                  <strong>550,000</strong>
+                </div>
+                <div class="state-card">
+                  <span>Balance</span>
+                  <strong data-bind="balance">$0.25</strong>
+                </div>
+                <div class="state-card">
+                  <span>Boost Uses</span>
+                  <strong data-bind="boostUses">0 / 3</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Suggested Call Flow</h2>
+            </div>
+            <div class="panel-body">
+              <ul class="script-list">
+                <li>
+                  <strong>1. Start on Home</strong>
+                  <span>Show the hub, balance area, timer, progress meter, boost strip, and catalog.</span>
+                </li>
+                <li>
+                  <strong>2. Simulate progress</strong>
+                  <span>Use Add Points or Trigger Event to show live updates and the non-blocking toast.</span>
+                </li>
+                <li>
+                  <strong>3. Open a game</strong>
+                  <span>Click any game tile to open the COUPON word puzzle.</span>
+                </li>
+                <li>
+                  <strong>4. Trigger cashout</strong>
+                  <span>
+                    Show the summary, payment provider list, cashout data form, final confirmation,
+                    then return Home with the congratulations popup.
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Implementation Choice</h2>
+            </div>
+            <div class="panel-body">
+              <p style="margin: 0; color: var(--copy)">
+                Built with the open web platform: standalone HTML, CSS, and JavaScript. That is
+                the lowest-risk toolchain for a compliance call because it runs locally, has no
+                package install, and avoids third-party CDN behavior during the demo.
+              </p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Event Log</h2>
+              <button class="inline-btn" data-action="clearLog">Clear</button>
+            </div>
+            <div class="panel-body">
+              <ul class="log-list" data-log></ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const ANSWER = "COUPON";
+      const GOAL = 550000;
+      const CYCLE_SECONDS = 60;
+      const POINTS_PER_DOLLAR = 100000;
+      const START_STATE = {
+        points: 100000,
+        balance: 5,
+        gems: 100000,
+        boostUses: 0,
+        goldActive: false,
+        couponStatus: "No cashout selected",
+        selectedProvider: "PayPal",
+        cashoutName: "",
+        cashoutEmail: "",
+        lifetimeEarnings: 1000,
+        secondsRemaining: CYCLE_SECONDS,
+        activeScreen: "home",
+        guesses: [],
+      };
+
+      let state = { ...START_STATE, guesses: [] };
+      let toastTimer;
+      let cycleInterval;
+
+      const $ = (selector, root = document) => root.querySelector(selector);
+      const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+      const formatNumber = (value) => new Intl.NumberFormat("en-US").format(value);
+      const formatMoney = (value) =>
+        new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
+      const formatTimer = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+      };
+      const cashoutScreens = new Set([
+        "cashoutSummary",
+        "providerSelect",
+        "cashoutForm",
+        "confirmCashout",
+        "rewardsHistory",
+      ]);
+      const routedScreens = new Set([
+        "home",
+        "game",
+        "store",
+        "cashoutSummary",
+        "providerSelect",
+        "cashoutForm",
+        "confirmCashout",
+        "rewardsHistory",
+        "profile",
+      ]);
+
+      function routeHashFor(view) {
+        if (view === "cashoutForm" && state.selectedProvider) {
+          return `#cashoutForm:${encodeURIComponent(state.selectedProvider)}`;
+        }
+        return `#${view}`;
+      }
+
+      function syncRouteHash(view) {
+        if (!routedScreens.has(view)) return;
+        const nextHash = routeHashFor(view);
+        if (window.location.hash === nextHash) return;
+        try {
+          window.history.replaceState(null, "", nextHash);
+        } catch {
+          window.location.hash = nextHash;
+        }
+      }
+
+      function setView(view, options = {}) {
+        if (!routedScreens.has(view)) view = "home";
+        state.activeScreen = view;
+        $(".app").classList.toggle("is-cashout-flow", cashoutScreens.has(view));
+        $$("[data-screen]").forEach((screen) => {
+          screen.classList.toggle("is-active", screen.dataset.screen === view);
+        });
+        $$("[data-view]").forEach((button) => {
+          if (button.closest(".phone-nav")) {
+            button.setAttribute("aria-selected", button.dataset.view === view ? "true" : "false");
+          }
+        });
+        $$("[data-route='game'], [data-action='openWordle']").forEach((button) => {
+          if (button.closest(".phone-nav")) {
+            button.setAttribute("aria-selected", view === "game" ? "true" : "false");
+          }
+        });
+        $$("[data-route='cashout'], [data-action='cashout']").forEach((button) => {
+          if (button.closest(".phone-nav")) {
+            button.setAttribute(
+              "aria-selected",
+              cashoutScreens.has(view) && view !== "rewardsHistory" ? "true" : "false",
+            );
+          }
+        });
+        if (options.updateHash !== false) syncRouteHash(view);
+      }
+
+      function render() {
+        const progress = Math.min(100, Math.round((state.points / GOAL) * 100));
+        $$("[data-bind='points']").forEach((el) => (el.textContent = formatNumber(state.points)));
+        $$("[data-bind='pointsShort']").forEach((el) => (el.textContent = formatNumber(state.points)));
+        $$("[data-bind='balance']").forEach((el) => (el.textContent = formatMoney(state.balance)));
+        $$("[data-bind='gems']").forEach((el) => {
+          el.textContent = `${formatNumber(state.gems)} available`;
+        });
+        $$("[data-bind='boostUses']").forEach((el) => {
+          el.textContent = `${state.boostUses} / 3`;
+        });
+        $$("[data-bind='boostStatus']").forEach((el) => {
+          const remaining = 3 - state.boostUses;
+          el.textContent = state.boostUses
+            ? `Active demo state, ${remaining} uses available`
+            : "Inactive, 3 uses available";
+        });
+        $$("[data-bind='goldStatus']").forEach((el) => {
+          el.textContent = state.goldActive ? "Active demo entitlement" : "Inactive";
+        });
+        $$("[data-bind='couponStatus']").forEach((el) => {
+          el.textContent = state.couponStatus;
+        });
+        $$("[data-bind='provider']").forEach((el) => {
+          el.textContent = state.selectedProvider;
+        });
+        $$("[data-bind='cashoutName']").forEach((el) => {
+          el.textContent = state.cashoutName || "Required";
+        });
+        $$("[data-bind='cashoutEmail']").forEach((el) => {
+          el.textContent = state.cashoutEmail || "Required";
+        });
+        $$("[data-bind='lifetimeEarnings']").forEach((el) => {
+          el.textContent = formatMoney(state.lifetimeEarnings);
+        });
+        $$("[data-bind='timer']").forEach((el) => {
+          el.textContent = formatTimer(state.secondsRemaining);
+        });
+        $$("[data-bind-style='progress']").forEach((el) => {
+          el.style.setProperty("--progress", `${progress}%`);
+        });
+        $$("[data-boost-dot]").forEach((dot) => {
+          dot.classList.toggle("is-used", Number(dot.dataset.boostDot) < state.boostUses);
+        });
+      }
+
+      function addLog(title, detail = "") {
+        const log = $("[data-log]");
+        const item = document.createElement("li");
+        item.innerHTML = `<strong>${title}</strong>${detail ? `<span>${detail}</span>` : ""}`;
+        log.prepend(item);
+        while (log.children.length > 6) log.lastElementChild.remove();
+      }
+
+      function showToast(title, detail = "", options = {}) {
+        const toast = $("[data-toast]");
+        toast.classList.toggle("payout-toast", options.kind === "payout");
+        toast.classList.toggle("loyalty-toast", options.kind === "loyalty");
+        if (options.kind === "payout") {
+          toast.innerHTML = `
+            <div class="payout-icon" aria-hidden="true">$</div>
+            <div>
+              <strong>${title}</strong>
+              <span>${detail}</span>
+            </div>
+          `;
+        } else if (options.kind === "loyalty") {
+          toast.innerHTML = `
+            <strong>${title}</strong>
+            <span>${detail} <span class="coin-dot" aria-hidden="true">$</span></span>
+          `;
+        } else {
+          toast.innerHTML = `<strong>${title}</strong>${detail ? `<span>${detail}</span>` : ""}`;
+        }
+        toast.classList.add("is-visible");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove("is-visible");
+          toast.classList.remove("payout-toast");
+          toast.classList.remove("loyalty-toast");
+        }, options.duration || 2600);
+      }
+
+      function addPoints(amount, source = "Manual simulation") {
+        state.points += amount;
+        render();
+        showToast(`+${formatNumber(amount)} Loyalty Points`, source);
+        addLog("Loyalty progress updated", `+${formatNumber(amount)} points from ${source}.`);
+      }
+
+      function addBalance(amount = 1) {
+        state.balance = Math.round((state.balance + amount) * 100) / 100;
+        render();
+        showToast("Balance Added", `+${formatMoney(amount)} available for cashout.`);
+        addLog("Balance manually added", `${formatMoney(amount)} added to available balance.`);
+      }
+
+      function completeCycle() {
+        const payoutDollars = Math.floor(state.points / POINTS_PER_DOLLAR);
+        const payout = payoutDollars;
+        state.balance = Math.round((state.balance + payout) * 100) / 100;
+        state.points = 0;
+        state.boostUses = 0;
+        state.secondsRemaining = CYCLE_SECONDS;
+        render();
+        showToast("Payout Ready", formatMoney(payout), { kind: "payout", duration: 4200 });
+        addLog(
+          "Cycle restarted",
+          `${formatNumber(payoutDollars * POINTS_PER_DOLLAR)} points converted to ${formatMoney(payout)}.`,
+        );
+      }
+
+      function tickCycle() {
+        state.secondsRemaining -= 1;
+        if (state.secondsRemaining <= 0) {
+          completeCycle();
+          return;
+        }
+        render();
+      }
+
+      function startCycleTimer() {
+        clearInterval(cycleInterval);
+        cycleInterval = setInterval(tickCycle, 1000);
+      }
+
+      function useBoost() {
+        if (state.boostUses >= 3) {
+          showToast("Boost limit reached", "Demo cycle already used all boost slots.");
+          addLog("Boost unavailable", "All three demo boost slots are used.");
+          return;
+        }
+        state.boostUses += 1;
+        render();
+        showToast("Optional Loyalty Boost Active", `${3 - state.boostUses} uses remain this cycle.`);
+        addLog("Boost state changed", `${state.boostUses} of 3 demo uses consumed.`);
+      }
+
+      function triggerCashout(options = {}) {
+        if (state.balance <= 0) {
+          $("[data-modal='noBalance']").classList.add("is-open");
+          addLog("Cashout blocked", "No unclaimed balance is available in the current demo state.");
+          return;
+        }
+        setView("cashoutSummary", options);
+        if (options.log !== false) {
+          addLog("Cashout opened", "User moved from Home to the payout summary screen.");
+        }
+      }
+
+      function closeModal() {
+        $$("[data-modal]").forEach((modal) => modal.classList.remove("is-open"));
+      }
+
+      function buyGems(amount) {
+        state.gems += amount;
+        render();
+        showToast("Gem balance updated", `+${formatNumber(amount)} demo gems.`);
+        addLog("Store package simulated", `${formatNumber(amount)} gems added.`);
+      }
+
+      function activateGold() {
+        state.goldActive = true;
+        render();
+        showToast("Gold Club Active", "Time-limited ad-experience benefit shown in profile.");
+        addLog("Gold Club activated", "Demo entitlement state is now active.");
+      }
+
+      function openProviderSelect(options = {}) {
+        setView("providerSelect", options);
+        if (options.log !== false) {
+          addLog("Provider list opened", "User advanced from summary to payment provider selection.");
+        }
+      }
+
+      function chooseProvider(provider, options = {}) {
+        state.selectedProvider = provider;
+        clearCashoutValidation();
+        render();
+        setView("cashoutForm", options);
+        if (options.log !== false) addLog("Provider selected", provider);
+      }
+
+      function clearCashoutValidation() {
+        $$("[data-field]").forEach((field) => field.classList.remove("is-invalid"));
+      }
+
+      function validateCashoutForm() {
+        const emailInput = $("[data-cashout-email]");
+        const nameInput = $("[data-cashout-name]");
+        const email = emailInput.value.trim();
+        const name = nameInput.value.trim();
+        const emailInvalid = !email;
+        const nameInvalid = !name;
+        $("[data-field='email']").classList.toggle("is-invalid", emailInvalid);
+        $("[data-field='name']").classList.toggle("is-invalid", nameInvalid);
+        if (emailInvalid || nameInvalid) {
+          showToast("Required fields missing", "Enter name and email to continue.");
+          addLog("Cashout form validation failed", "Required name or email was missing.");
+          return;
+        }
+        state.cashoutEmail = email;
+        state.cashoutName = name;
+        render();
+        setView("confirmCashout");
+        addLog("Cashout data accepted", `${name} / ${email}`);
+      }
+
+      function confirmCashout() {
+        const amount = state.balance;
+        state.balance = 0;
+        state.points = 0;
+        state.boostUses = 0;
+        state.lifetimeEarnings = Math.round((state.lifetimeEarnings + amount) * 100) / 100;
+        state.couponStatus = `${state.selectedProvider} cashout pending`;
+        render();
+        setView("home");
+        $("[data-modal='congratulations']").classList.add("is-open");
+        addLog("Cashout confirmed", `${formatMoney(amount)} requested through ${state.selectedProvider}.`);
+      }
+
+      function clearBalance() {
+        state.balance = 0;
+        render();
+        showToast("Balance cleared", "Click Cashout to show the no-balance path.");
+        addLog("Balance cleared", "No-balance branch is ready to demo.");
+      }
+
+      function showAccumulationInfo() {
+        showToast("Accumulation note", "The demo keeps earnings available until a cashout is confirmed.");
+      }
+
+      function resetWordle() {
+        state.guesses = [];
+        $("[data-wordle-input]").value = "";
+        renderWordle();
+      }
+
+      function resetLevel() {
+        closeModal();
+        resetWordle();
+        setView("game");
+        $("[data-wordle-input]").focus();
+        addLog("Word puzzle reset", "Level Complete acknowledged and board cleared.");
+      }
+
+      function openWordle() {
+        setView("game");
+        if (!state.guesses.length) renderWordle();
+        $("[data-wordle-input]").focus();
+      }
+
+      function renderWordle() {
+        const board = $("[data-wordle-board]");
+        board.innerHTML = "";
+        for (let row = 0; row < 6; row += 1) {
+          const rowEl = document.createElement("div");
+          rowEl.className = "wordle-row";
+          const guess = state.guesses[row] || "";
+          for (let col = 0; col < 6; col += 1) {
+            const cell = document.createElement("div");
+            cell.className = "wordle-cell";
+            const letter = guess[col] || "";
+            cell.textContent = letter;
+            if (guess) {
+              if (ANSWER[col] === letter) cell.classList.add("hit");
+              else if (ANSWER.includes(letter)) cell.classList.add("near");
+              else cell.classList.add("miss");
+            }
+            rowEl.append(cell);
+          }
+          board.append(rowEl);
+        }
+        const keyboard = $("[data-keyboard]");
+        keyboard.innerHTML = "";
+        "COUPNWRDLE".split("").forEach((letter) => {
+          const key = document.createElement("button");
+          key.type = "button";
+          key.textContent = letter;
+          key.addEventListener("click", () => {
+            const input = $("[data-wordle-input]");
+            if (input.value.length < 6) {
+              input.value += letter;
+              input.focus();
+            }
+          });
+          keyboard.append(key);
+        });
+      }
+
+      function submitGuess() {
+        const input = $("[data-wordle-input]");
+        const guess = input.value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 6);
+        if (guess.length !== 6) {
+          showToast("Six letters required", "Try COUPON for the scripted demo.");
+          return;
+        }
+        if (state.guesses.length >= 6) {
+          showToast("Puzzle complete", "Reset the demo to play again.");
+          return;
+        }
+        state.guesses.push(guess);
+        input.value = "";
+        renderWordle();
+        if (guess === ANSWER) {
+          const levelPoints = 100000;
+          state.points += levelPoints;
+          render();
+          showToast("Loyalty Points", `+${formatNumber(levelPoints)}`, {
+            kind: "loyalty",
+            duration: 3800,
+          });
+          $("[data-modal='levelComplete']").classList.add("is-open");
+          addLog("Word puzzle solved", "Answer COUPON completed.");
+        } else {
+          showToast("Guess submitted", "Keep trying. Demo answer is COUPON.");
+        }
+      }
+
+      function resetDemo() {
+        state = { ...START_STATE, guesses: [] };
+        $("[data-log]").innerHTML = "";
+        $("[data-cashout-email]").value = "";
+        $("[data-cashout-name]").value = "";
+        clearCashoutValidation();
+        closeModal();
+        setView("home");
+        render();
+        renderWordle();
+        showToast("Demo reset", "State restored to the opening scenario.");
+      }
+
+      function handleAction(action, target) {
+        if (action === "addPoints") addPoints(Number(target.dataset.points || 10000));
+        if (action === "addBalance") addBalance(Number(target.dataset.dollars || 1));
+        if (action === "qualifyingEvent") addPoints(12500, "Qualifying gameplay event");
+        if (action === "useBoost") useBoost();
+        if (action === "cashout") triggerCashout();
+        if (action === "closeModal") closeModal();
+        if (action === "buyGems") buyGems(Number(target.dataset.gems || 0));
+        if (action === "activateGold") activateGold();
+        if (action === "openProviderSelect") openProviderSelect();
+        if (action === "chooseProvider") chooseProvider(target.dataset.provider || "PayPal");
+        if (action === "validateCashoutForm") validateCashoutForm();
+        if (action === "confirmCashout") confirmCashout();
+        if (action === "clearBalance") clearBalance();
+        if (action === "showAccumulationInfo") showAccumulationInfo();
+        if (action === "openWordle") openWordle();
+        if (action === "submitGuess") submitGuess();
+        if (action === "resetLevel") resetLevel();
+        if (action === "resetDemo") resetDemo();
+        if (action === "clearLog") $("[data-log]").innerHTML = "";
+      }
+
+      function routeFromElement(routeElement) {
+        const route = routeElement.dataset.route || routeElement.dataset.view || "";
+        if (route === "cashout") {
+          triggerCashout();
+          return;
+        }
+        if (route === "providerSelect") {
+          openProviderSelect();
+          return;
+        }
+        if (route === "cashoutForm") {
+          chooseProvider(routeElement.dataset.provider || "PayPal");
+          return;
+        }
+        if (route === "game") {
+          openWordle();
+          return;
+        }
+        if (route) setView(route);
+      }
+
+      function applyRouteFromHash() {
+        const rawHash = window.location.hash.slice(1);
+        if (!rawHash) return;
+        const [rawView, ...providerParts] = rawHash.split(":");
+        const view = decodeURIComponent(rawView);
+        if (!routedScreens.has(view)) return;
+        if (view === "cashoutForm") {
+          const provider = decodeURIComponent(providerParts.join(":")) || state.selectedProvider;
+          chooseProvider(provider, { updateHash: false, log: false });
+          return;
+        }
+        if (view === "cashoutSummary" && state.balance <= 0) {
+          triggerCashout({ updateHash: false, log: false });
+          return;
+        }
+        setView(view, { updateHash: false });
+      }
+
+      document.addEventListener("click", (event) => {
+        const target = event.target.closest("[data-route], [data-view], [data-action]");
+        if (!target) return;
+        const routeTarget = target.closest("[data-route], [data-view]");
+        if (routeTarget) {
+          event.preventDefault();
+          routeFromElement(routeTarget);
+          return;
+        }
+        const actionTarget = target.closest("[data-action]");
+        if (actionTarget) {
+          event.preventDefault();
+          handleAction(actionTarget.dataset.action, actionTarget);
+        }
+      });
+
+      window.addEventListener("hashchange", applyRouteFromHash);
+
+      $("[data-wordle-input]").addEventListener("input", (event) => {
+        event.target.value = event.target.value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 6);
+      });
+
+      $("[data-wordle-input]").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") submitGuess();
+      });
+
+      render();
+      renderWordle();
+      applyRouteFromHash();
+      startCycleTimer();
+      addLog("Demo ready", "Open Home, add points, play COUPON, then trigger cashout.");
+    </script>
+  </body>
+</html>
