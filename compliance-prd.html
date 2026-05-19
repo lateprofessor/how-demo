@@ -169,6 +169,32 @@
         margin: 24px 0 0;
       }
 
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .hero-link {
+        align-items: center;
+        background: var(--ink);
+        border: 1px solid var(--ink);
+        color: #fff;
+        display: inline-flex;
+        font-weight: 800;
+        min-height: 46px;
+        padding: 10px 16px;
+        text-decoration: none;
+      }
+
+      .hero-link:hover,
+      .hero-link:focus-visible {
+        background: #fff;
+        color: var(--ink);
+        outline: none;
+      }
+
       .meta-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -532,6 +558,9 @@
             and partner fulfillment handoff for a first-party mobile game hub. It focuses on what
             the player sees and how each step moves through the interface.
           </p>
+          <div class="hero-actions">
+            <a class="hero-link" href="interactive-demo.html">Open interactive demo</a>
+          </div>
 
           <div class="meta-grid" aria-label="Document summary">
             <div class="meta-card">
